@@ -18,6 +18,7 @@ parameters:
     opifer.content.css_block.class: Opifer\ContentBundle\Block\Service\CssBlockService
     opifer.content.javascript_block.class: Opifer\ContentBundle\Block\Service\JavaScriptBlockService
     opifer.content.pointer_block.class: Opifer\ContentBundle\Block\Service\PointerBlockService
+    opifer.content.video_block.class: Opifer\ContentBundle\Block\Service\VideoBlockService
 
 services:
     opifer.content.carousel_block:
@@ -155,3 +156,9 @@ services:
         arguments: ['@templating', '%opifer_content.tabnav_block_configuration%']
         tags:
             - { name: opifer.content.block_service, alias: tabnav }
+
+    opifer.content.video_block:
+        class: '%opifer.content.video_block.class%'
+        arguments: ['@templating', []]
+        tags:
+            - { name: opifer.content.block_service, alias: video }

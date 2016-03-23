@@ -46,6 +46,7 @@ class MediaController extends Controller
      */
     public function createAction(Request $request, $provider = 'image')
     {
+
         $dispatcher = $this->get('event_dispatcher');
         $event = new ResponseEvent($request);
         $dispatcher->dispatch(OpiferMediaEvents::MEDIA_CONTROLLER_NEW, $event);

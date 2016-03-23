@@ -15,6 +15,17 @@
                         <i class="material-icons md-18">search</i>
                     </span>
                     <input type="text" class="form-control" placeholder="Enter name, filename or description" ng-model="mediaCollection.search" ng-change="mediaCollection.loadMore(true)">
+                    
+                </div>
+            </div>
+        </div>
+        <div class="row row-space-4">
+            <div class="col-md-4">
+                <div class="input-group search-group">
+                    <input type="text" class="form-control" placeholder="Enter youtube video link" id="youtube_link">
+                    <div class="btn btn-primary" id="btnMediaPaginate"  ng-click="addYoutubeVideo()">
+                        Add
+                    </div>
                 </div>
             </div>
         </div>

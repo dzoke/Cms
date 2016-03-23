@@ -1,0 +1,14 @@
+<div {{ manage_tags() }}>
+    <h1>{{ block.title|default }}</h1>
+    <h1>{{ block.caption|default }}</h1>
+  	{% if block.media.provider == 'youtube' %}
+      	<iframe width="{{ block.width|default('420') }}" height="{{ block.width|default('315') }}"
+			src="https://www.youtube.com/embed/Ch_gW_PiBz4" allowfullscreen>
+	  	</iframe>
+	{% else %}
+	  	<video width="{{ block.properties.width|default('320') }}" height="{{ block.properties.height|default('240') }}" controls preload="auto">
+	  		<source src="{{ block.media.original|default }}" type="video/mp4">
+			Your browser does not support the video tag.
+		</video> 
+	{% endif %}
+</div>

@@ -116,6 +116,25 @@ angular.module('mediaLibrary', ['infinite-scroll', 'ngModal', 'angularFileUpload
         };
 
         /**
+         * Add Youtube Video
+         */
+        $scope.addYoutubeVideo = function() {
+            var link = angular.element('#youtube_link')[0].value;
+
+            if ( link.trim() && link.match(/^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/) ) {
+                $http({
+                    url: Routing.generate('opifer_media_media_create', {'provider': 'youtube'}),
+                    method: "POST"
+                }).success(function (data, status, headers, config) {
+                    console.log(data);
+                }).error(function (data, status, headers, config) {});
+            } else {
+                alert('Error: Empty or not valid youtube url!');
+                return false;
+            }
+        };
+
+        /**
          * Toggle the picker
          */
         $scope.togglePicker = function() {
