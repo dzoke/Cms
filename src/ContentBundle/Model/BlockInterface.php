@@ -16,10 +16,10 @@ interface BlockInterface
      */
     public function getBlockType();
 
-    /**
-     * Version number (grouped) of the entire tree.
-     *
-     * @return integer
-     */
-    public function getRootVersion();
+
+    public function isInRoot();
+
+    public function getOwner();
+
+    public function setDraft($draft);
 }

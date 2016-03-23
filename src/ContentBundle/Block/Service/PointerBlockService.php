@@ -36,49 +36,21 @@ class PointerBlockService extends AbstractBlockService implements BlockServiceIn
 
         $this->blockManager = $blockManager;
     }
-    /**
-     * {@inheritdoc}
-     */
-    public function execute(BlockInterface $block, Response $response = null)
+
+    public function getViewParameters(BlockInterface $block)
     {
-        $this->load($block);
+        $parameters = parent::getViewParameters($block);
 
-        $parameters = array(
-            'block_service'  => $this,
-            'block'          => $block->getReference(),
-        );
-
-        return $this->renderResponse($this->getView($block), $parameters,  $response);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function manage(BlockInterface $block, Response $response = null)
-    {
-        $this->load($block);
-
-        $parameters = array(
-            'block_service'  => $this,
-            'pointer'        => $block,
-            'block'          => $block->getReference() ? $block->getReference() : $block,
-            'block_view'     => $this->getView($block),
-            'manage_type'    => $this->getManageFormTypeName(),
-        );
-
-        return $this->renderResponse($this->getManageView($block), $parameters, $response);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getView(BlockInterface $block)
-    {
-        if (!$block->getReference()) {
-            return $this->config['view'];
+        $reference = null;
+        if ($block->getReference()) {
+            $reference = $this->environment->getBlock($block->getReference()->getId());
         }
 
-        return $this->getReferenceService($block)->getView($block->getReference());
+        $custom = [
+            'reference' => $reference,
+        ];
+
+        return array_merge($parameters, $custom);
     }
 
     public function getReferenceService(BlockInterface $block)
@@ -96,6 +68,11 @@ class PointerBlockService extends AbstractBlockService implements BlockServiceIn
         }
 
         return sprintf('%s (shared)', $this->getReferenceService($block)->getName($block->getReference()));
+    }
+
+    public function allowShare(BlockInterface $block)
+    {
+        return false;
     }
 
     /**
@@ -116,8 +93,10 @@ class PointerBlockService extends AbstractBlockService implements BlockServiceIn
                     'query_builder' => function (EntityRepository $blockRepository) {
                         return $blockRepository->createQueryBuilder('b')
                             ->add('orderBy', 'b.sharedDisplayName ASC')
-                            ->andWhere("b.shared = 1")
-                            ->andWhere("b.owner IS NULL");
+                            ->andWhere("b.shared = :shared")
+                            ->andWhere("b.content IS NULL")
+                            ->andWhere("b.template IS NULL")
+                            ->setParameter('shared', true);
                         ;
                     },
                 ])
@@ -145,11 +124,16 @@ class PointerBlockService extends AbstractBlockService implements BlockServiceIn
      */
     public function getTool()
     {
-        $tool = new Tool('Shared block', 'OpiferContentBundle:PointerBlock');
+        $tool = new Tool('Shared block', 'pointer');
 
         $tool->setIcon('all_inclusive')
             ->setDescription('This block will load a shared block');
 
         return $tool;
+    }
+
+    public function getPlaceholders(BlockInterface $block = null)
+    {
+        return [0 => 'Reference'];
     }
 }
